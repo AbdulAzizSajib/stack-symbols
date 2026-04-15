@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import QueryProviders from "@/providers/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const spaceGroteskHeading = Space_Grotesk({subsets:['latin'],variable:'--font-heading'});
 
@@ -32,7 +34,17 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, spaceGroteskHeading.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+
+    
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        
+          <QueryProviders>
+          {children}
+          <Toaster position="top-right" richColors />
+        </QueryProviders>
+        
+        
+    </body>
     </html>
   );
 }
