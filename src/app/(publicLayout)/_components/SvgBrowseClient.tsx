@@ -62,7 +62,7 @@ export default function SvgBrowseClient({ initialQuery }: { initialQuery: ISvgLi
     const meta = data?.success ? data.meta : undefined;
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-6 container mx-auto px-4 py-8">
             <header className="flex flex-col gap-3">
                 <h1 className="font-heading text-3xl font-semibold tracking-tight">Browse SVGs</h1>
                 <p className="text-sm text-muted-foreground">
