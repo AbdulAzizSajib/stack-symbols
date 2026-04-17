@@ -103,15 +103,44 @@ export default function SvgBrowseClient() {
     }
 
     return (
-    <section className="space-y-6 max-w-6xl mx-auto py-8">
-   <header className="flex flex-col gap-3 text-center ">
-  <h1 className="font-heading text-3xl  font-bold tracking-tight">
-   Find Your Perfect Tech Stack Symbols
+    <section className="space-y-6 max-w-6xl mx-auto py-4">
+ <header className="flex flex-col items-center text-center gap-2 py-2">
+
+  {/* Badge */}
+  <div className="inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/50 px-3 py-1">
+    <span className="size-1.5 rounded-full bg-emerald-500 shrink-0" />
+    <span className="text-xs text-muted-foreground">free to use · no attribution required</span>
+  </div>
+
+  {/* Heading */}
+  <h1 className="font-heading text-4xl font-extrabold tracking-tight leading-[1.2] max-w-2xl">
+    Find your perfect tech stack symbols
   </h1>
-  <p className="text-lg text-muted-foreground leading-relaxed">
-    Browse, copy, and embed high-quality Tech Stack symbols from our public library to elevate your portfolio and projects.
+
+  {/* Subtext */}
+  <p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl">
+    Browse, copy, and embed high-quality tech stack symbols from our public library — built for developers and designers.
   </p>
-    </header>
+
+  {/* Stats */}
+  <div className="flex items-center gap-6 flex-wrap justify-center mt-1">
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-lg font-medium text-foreground">{data?.meta?.total || 0} +</span>
+      <span className="text-[11px] text-muted-foreground">icons</span>
+    </div>
+    <div className="w-px h-7 bg-border/50" />
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-lg font-medium text-foreground">SVG</span>
+      <span className="text-[11px] text-muted-foreground">format</span>
+    </div>
+    <div className="w-px h-7 bg-border/50" />
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-lg font-medium text-foreground">free</span>
+      <span className="text-[11px] text-muted-foreground">forever</span>
+    </div>
+  </div>
+
+</header>
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
 
          <SvgSearchBar defaultValue={query.search ?? ""} onSubmit={onSearch} />
@@ -170,29 +199,65 @@ export default function SvgBrowseClient() {
   </form>
 </div>
 
-<footer className="mt-16 border-t border-border/70 py-6">
-  <div className="max-w-5xl mx-auto px-4 flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground">
-    
-<p className="flex items-center gap-2">
-  developed by 
-  <a
-    href="https://abdulazizsajib.vercel.app/"
-    target="_blank"
-    rel="noopener noreferrer"
-    className=" text-zinc-900 capitalize underline font-bold transition flex items-center gap-1"
-  >
-    AbdulAzizSajib
- 
-  </a>
-</p>
+<footer className="border-t border-border/50 py-10 mt-16">
+  <div className="max-w-5xl mx-auto px-4 flex flex-col gap-8">
 
+    {/* Top row */}
+    <div className="flex flex-wrap items-start justify-between gap-6">
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+      <p className="text-xs text-muted-foreground">
+        built by{" "}
+        
+        <a  href="https://abdulazizsajib.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground border-b border-border hover:border-foreground transition-colors"
+        >
+          AbdulAzizSajib
+        </a>
+        <span> · © {new Date().getFullYear()} all rights reserved</span>
+      </p>
+    </div>
+      {/* Links */}
+      <div className="flex items-center gap-6 flex-wrap">
+        
+         <a href="https://github.com/AbdulAzizSajib"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+        
+         <a href="https://abdulazizsajib.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="8" cy="8" r="6.5"/>
+            <path d="M8 1.5C6 4 5 6 5 8s1 4 3 6.5M8 1.5C10 4 11 6 11 8s-1 4-3 6.5M1.5 8h13"/>
+          </svg>
+          Portfolio
+        </a>
+      </div>
+
+    </div>
+
+ 
+    {/* Bottom row */}
   
-    <p>
-      © {new Date().getFullYear()} All rights reserved.
-    </p>
 
   </div>
 </footer>
+
+
+
+
         </section>
     );
 }

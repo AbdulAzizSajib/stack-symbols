@@ -37,7 +37,7 @@ export function SvgSearchBar({
                         type="search"
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
-                        placeholder="Search SVGs… react, go, tailwind"
+                        placeholder="Search… react, go, tailwind"
                         className="h-9 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
                     />
 
