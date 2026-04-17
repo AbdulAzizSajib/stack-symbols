@@ -17,7 +17,7 @@ type SearchParams = Promise<{
 function parseQuery(sp: Awaited<SearchParams>): ISvgListQuery {
     return {
         page: sp.page ? Number(sp.page) : 1,
-        limit: sp.limit ? Number(sp.limit) : 20,
+        limit: sp.limit ? Number(sp.limit) : 200,
         search: sp.search || undefined,
         visibility: (sp.visibility as ISvgListQuery["visibility"]) ?? undefined,
     };

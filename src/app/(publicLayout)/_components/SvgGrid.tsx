@@ -32,7 +32,7 @@ export function SvgGrid({
 
     return (
         <div
-            className="grid gap-4  sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12"
+            className="flex flex-wrap gap-4 justify-center sm:justify-start "
             data-fetching={fetching ? "true" : undefined}
         >
             {items.map((svg) => (

@@ -10,6 +10,8 @@ import SvgBrowseClient from "./_components/SvgBrowseClient";
 type SearchParams = Promise<{
     page?: string;
     limit?: string;
+    sortBy?: string;
+    sortOrder?: string;
     search?: string;
     categoryId?: string;
     tag?: string;
@@ -19,7 +21,9 @@ type SearchParams = Promise<{
 function parseQuery(sp: Awaited<SearchParams>): ISvgListQuery {
     return {
         page: sp.page ? Number(sp.page) : 1,
-        limit: sp.limit ? Number(sp.limit) : 20,
+        limit: sp.limit ? Number(sp.limit) : 200,
+        sortBy: (sp.sortBy as ISvgListQuery["sortBy"]) ?? "title",
+        sortOrder: (sp.sortOrder as ISvgListQuery["sortOrder"]) ?? "asc",
         search: sp.search || undefined,
         categoryId: sp.categoryId || undefined,
         tag: sp.tag || undefined,

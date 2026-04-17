@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardPaste, Upload } from "lucide-react";
+import { Layers, Upload } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
@@ -11,10 +11,10 @@ import type { ISvgListQuery } from "@/types/svg.types";
 
 import { AdminSvgFilters } from "./AdminSvgFilters";
 import { AdminSvgTable } from "./AdminSvgTable";
-import { PasteSvgPanel } from "./PasteSvgPanel";
+import { PasteBulkPanel } from "./PasteBulkPanel";
 import { UploadSvgPanel } from "./UploadSvgPanel";
 
-type Panel = "upload" | "paste" | null;
+type Panel = "upload" | "pasteBulk" | null;
 
 export default function AdminSvgClient({ initialQuery }: { initialQuery: ISvgListQuery }) {
     const router = useRouter();
@@ -23,7 +23,7 @@ export default function AdminSvgClient({ initialQuery }: { initialQuery: ISvgLis
 
     const query = useMemo<ISvgListQuery>(() => {
         const page = Number(searchParams.get("page") ?? initialQuery.page ?? 1);
-        const limit = Number(searchParams.get("limit") ?? initialQuery.limit ?? 20);
+        const limit = Number(searchParams.get("limit") ?? initialQuery.limit ?? 200);
         return {
             page,
             limit,
@@ -63,9 +63,9 @@ export default function AdminSvgClient({ initialQuery }: { initialQuery: ISvgLis
                 description="Upload new icons, paste raw SVG markup, and curate metadata for every asset that powers the product."
                 actions={
                     <>
-                        <Button variant="outline" onClick={() => setPanel(panel === "paste" ? null : "paste")}>
-                            <ClipboardPaste className="size-4" />
-                            Paste SVG
+                        <Button variant="outline" onClick={() => setPanel(panel === "pasteBulk" ? null : "pasteBulk")}>
+                            <Layers className="size-4" />
+                            Bulk Paste
                         </Button>
                         <Button onClick={() => setPanel(panel === "upload" ? null : "upload")}>
                             <Upload className="size-4" />
@@ -76,7 +76,7 @@ export default function AdminSvgClient({ initialQuery }: { initialQuery: ISvgLis
             />
 
             {panel === "upload" ? <UploadSvgPanel onClose={() => setPanel(null)} /> : null}
-            {panel === "paste" ? <PasteSvgPanel onClose={() => setPanel(null)} /> : null}
+            {panel === "pasteBulk" ? <PasteBulkPanel onClose={() => setPanel(null)} /> : null}
 
             <AdminSvgFilters
                 query={query}

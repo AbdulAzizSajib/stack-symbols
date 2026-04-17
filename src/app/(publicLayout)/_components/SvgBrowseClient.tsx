@@ -16,10 +16,18 @@ export default function SvgBrowseClient({ initialQuery }: { initialQuery: ISvgLi
 
     const query = useMemo<ISvgListQuery>(() => {
         const page = Number(searchParams.get("page") ?? initialQuery.page ?? 1);
-        const limit = Number(searchParams.get("limit") ?? initialQuery.limit ?? 20);
+        const limit = Number(searchParams.get("limit") ?? initialQuery.limit ?? 200);
         return {
             page,
             limit,
+            sortBy:
+                (searchParams.get("sortBy") as ISvgListQuery["sortBy"]) ??
+                initialQuery.sortBy ??
+                "title",
+            sortOrder:
+                (searchParams.get("sortOrder") as ISvgListQuery["sortOrder"]) ??
+                initialQuery.sortOrder ??
+                "asc",
             search: searchParams.get("search") || initialQuery.search || undefined,
             categoryId: searchParams.get("categoryId") || initialQuery.categoryId || undefined,
             tag: searchParams.get("tag") || initialQuery.tag || undefined,
@@ -58,11 +66,21 @@ export default function SvgBrowseClient({ initialQuery }: { initialQuery: ISvgLi
         );
     }
 
-    const items = data?.success ? data.data : [];
+    const items = useMemo(() => {
+        const list = data?.success ? data.data : [];
+        if (query.sortBy !== "title") return list;
+
+        return [...list].sort((a, b) => {
+            const left = (a.title ?? a.slug ?? "").toLowerCase();
+            const right = (b.title ?? b.slug ?? "").toLowerCase();
+            const compare = left.localeCompare(right);
+            return query.sortOrder === "desc" ? -compare : compare;
+        });
+    }, [data, query.sortBy, query.sortOrder]);
     const meta = data?.success ? data.meta : undefined;
 
     return (
-        <section className="space-y-6 container mx-auto px-4 py-8">
+        <section className="space-y-6 container mx-auto px-4 py-8  bg-[#EDE9E6]">
             <header className="flex flex-col gap-3">
                 <h1 className="font-heading text-3xl font-semibold tracking-tight">Browse SVGs</h1>
                 <p className="text-sm text-muted-foreground">

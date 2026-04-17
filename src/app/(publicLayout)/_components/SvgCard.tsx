@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { toast } from "sonner";
 
-import { Card, CardContent } from "@/components/ui/card";
 import type { ISvg } from "@/types/svg.types";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -22,19 +22,15 @@ export function SvgCard({ svg }: { svg: ISvg }) {
     };
 
     return (
-        <Card className="group cursor-pointer transition-all hover:shadow-lg hover:scale-105" onClick={handleCopyUrl}>
-            <CardContent className="p-4">
-                <div className="flex flex-col items-center space-y-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src={previewUrl}
-                        alt={svg.title ?? svg.slug}
-                        className="h-16 w-16 object-contain rounded-lg transition-transform group-hover:scale-110"
-                        loading="lazy"
-                    />
-                    <p className="text-sm font-medium text-center truncate w-full">{svg.title ?? svg.slug}</p>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="flex flex-col items-center space-y-3 rounded-lg transition-all hover:scale-105" onClick={handleCopyUrl}>
+            <Image
+                src={previewUrl}
+                alt={svg.title ?? svg.slug}
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-lg object-contain transition-transform group-hover:scale-110"
+                unoptimized
+            />
+        </div>
     );
 }

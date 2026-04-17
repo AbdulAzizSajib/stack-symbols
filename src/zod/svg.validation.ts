@@ -28,6 +28,22 @@ export const pasteSvgZodSchema = z.object({
 });
 export type IPasteSvgPayload = z.infer<typeof pasteSvgZodSchema>;
 
+export const pasteBulkItemZodSchema = z.object({
+    svgContent: z
+        .string()
+        .min(1, "SVG content is required")
+        .refine((v) => v.trim().startsWith("<svg"), "Content must start with <svg ...>"),
+    title: z.string().max(120).optional(),
+    visibility: visibilityEnum.optional(),
+    categoryId: z.string().optional(),
+    tags: z.array(z.string()).optional(),
+});
+
+export const pasteBulkZodSchema = z.object({
+    items: z.array(pasteBulkItemZodSchema).min(1, "At least one item is required"),
+});
+export type IPasteBulkPayload = z.infer<typeof pasteBulkZodSchema>;
+
 export const updateSvgZodSchema = z
     .object({
         title: z.string().max(120).optional(),

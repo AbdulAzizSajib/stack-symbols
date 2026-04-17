@@ -23,6 +23,8 @@ export interface ISvg {
 export interface ISvgListQuery {
     page?: number;
     limit?: number;
+    sortBy?: "title" | "createdAt" | "updatedAt";
+    sortOrder?: "asc" | "desc";
     search?: string;
     categoryId?: string;
     tag?: string;
@@ -44,6 +46,29 @@ export interface IPasteSvgPayload {
     visibility?: Visibility;
     categoryId?: string;
     tags?: string[];
+}
+
+export interface IPasteBulkItem {
+    svgContent: string;
+    title?: string;
+    visibility?: Visibility;
+    categoryId?: string;
+    tags?: string[];
+}
+
+export interface IPasteBulkPayload {
+    items: IPasteBulkItem[];
+}
+
+export interface IPasteBulkResult {
+    total: number;
+    successful: number;
+    failed: number;
+    results: ISvg[];
+    errors: Array<{
+        index: number;
+        message: string;
+    }>;
 }
 
 export interface IUpdateSvgPayload {

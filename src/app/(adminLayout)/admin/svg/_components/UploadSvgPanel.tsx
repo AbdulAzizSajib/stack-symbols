@@ -16,7 +16,6 @@ export function UploadSvgPanel({ onClose }: { onClose: () => void }) {
     const fileRef = useRef<HTMLInputElement>(null);
     const [title, setTitle] = useState("");
     const [visibility, setVisibility] = useState<Visibility>("PUBLIC");
-    const [tagsCsv, setTagsCsv] = useState("");
     const [fileName, setFileName] = useState<string | null>(null);
 
     const upload = useUploadSvg();
@@ -42,14 +41,12 @@ export function UploadSvgPanel({ onClose }: { onClose: () => void }) {
         fd.append("svg", file);
         if (title.trim()) fd.append("title", title.trim());
         fd.append("visibility", visibility);
-        if (tagsCsv.trim()) fd.append("tags", tagsCsv.trim());
 
         upload.mutate(fd, {
             onSuccess: (res) => {
                 if (res.success) {
                     toast.success("SVG uploaded");
                     setTitle("");
-                    setTagsCsv("");
                     setFileName(null);
                     if (fileRef.current) fileRef.current.value = "";
                     onClose();
@@ -119,18 +116,6 @@ export function UploadSvgPanel({ onClose }: { onClose: () => void }) {
                             </option>
                         ))}
                     </select>
-                </label>
-
-                <label className="md:col-span-2">
-                    <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                        Tags (comma separated)
-                    </span>
-                    <input
-                        value={tagsCsv}
-                        onChange={(e) => setTagsCsv(e.target.value)}
-                        placeholder="icon, svg, design"
-                        className="h-10 w-full rounded-xl border border-border/70 bg-background px-3 text-sm outline-none focus:border-primary"
-                    />
                 </label>
 
                 <div className="md:col-span-2 flex justify-end gap-2">

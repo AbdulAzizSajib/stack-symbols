@@ -4,11 +4,12 @@ import { queryKeys } from "@/config/queryKeys";
 import { deleteSvgAction } from "@/services/svg/delete.action";
 import { getSvgBySlugAction } from "@/services/svg/get.action";
 import { listSvgAction } from "@/services/svg/list.action";
+import { pasteBulkAction } from "@/services/svg/paste-bulk.action";
 import { pasteSvgAction } from "@/services/svg/paste.action";
 import { trackSvgAction } from "@/services/svg/track.action";
 import { updateSvgAction } from "@/services/svg/update.action";
 import { uploadSvgAction } from "@/services/svg/upload.action";
-import type { ISvgListQuery, ITrackSvgPayload } from "@/types/svg.types";
+import type { IPasteBulkPayload, ISvgListQuery, ITrackSvgPayload } from "@/types/svg.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useSvgList(query: ISvgListQuery = {}) {
@@ -47,6 +48,14 @@ export function usePasteSvg() {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: pasteSvgAction,
+        onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.svg.lists() }),
+    });
+}
+
+export function usePasteBulk() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (payload: IPasteBulkPayload) => pasteBulkAction(payload),
         onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.svg.lists() }),
     });
 }

@@ -32,6 +32,7 @@ export const endpoints = {
         rawIcon: (slug: string) => `/svg/icons/${slug}`,
         upload: "/svg/upload",
         paste: "/svg/paste",
+        pasteBulk: "/svg/paste-bulk",
         track: (slug: string) => `/svg/${slug}/track`,
     },
     usageEvents: {
