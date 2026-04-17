@@ -30,9 +30,7 @@ const navigation: NavItem[] = [
     { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/users", label: "Users", icon: Users },
-    { href: "/admin/categories", label: "Categories", icon: FolderKanban },
     { href: "/admin/svg", label: "SVG", icon: Shapes },
-    { href: "/admin/tags", label: "Tags", icon: GalleryVerticalEnd },
     { href: "/admin/logout", label: "Logout", icon: LogOut },
 
 ];
