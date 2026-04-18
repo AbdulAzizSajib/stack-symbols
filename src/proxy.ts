@@ -3,6 +3,7 @@ import { getDefaultDashboardRoute, getRouteOwner, isAuthRoute } from './lib/auth
 import { jwtUtils } from './lib/jwtUtils';
 import { isTokenExpiringSoon } from './lib/tokenUtils';
 import { getNewTokensWithRefreshToken } from './services/auth/refresh-token.action';
+import { getUserInfo } from './services/users/me.action';
 import type { UserRole } from './types/auth.types';
 
 async function refreshTokenMiddleware(refreshToken: string): Promise<boolean> {
@@ -23,27 +24,22 @@ export async function proxy(request: NextRequest) {
 
     const accessSecret = process.env.JWT_ACCESS_SECRET as string;
 
-    const verifyResult = accessToken ? jwtUtils.verifyToken(accessToken, accessSecret) : null;
-    const isValidAccessToken = !!verifyResult?.success;
-    const decodedAccessToken = verifyResult?.data;
+    const decodedAccessToken = accessToken && jwtUtils.verifyToken(accessToken, accessSecret).data;
+    const isValidAccessToken = !!(
+      accessToken && jwtUtils.verifyToken(accessToken, accessSecret).success
+    );
 
     let userRole: UserRole | null = null;
-    let emailVerified: boolean | null = null;
-    let needPasswordChange: boolean | null = null;
-    let email: string | null = null;
 
     if (decodedAccessToken && typeof decodedAccessToken === 'object') {
       userRole = decodedAccessToken.role as UserRole;
-      emailVerified = decodedAccessToken.emailVerified as boolean;
-      needPasswordChange = decodedAccessToken.needPasswordChange as boolean;
-      email = decodedAccessToken.email as string;
     }
 
     const routeOwner = getRouteOwner(pathname);
     const isAuth = isAuthRoute(pathname);
 
     // Proactively refresh access token if it is about to expire
-    if (isValidAccessToken && refreshToken && (await isTokenExpiringSoon(accessToken!))) {
+    if (isValidAccessToken && refreshToken && (await isTokenExpiringSoon(accessToken))) {
       const requestHeaders = new Headers(request.headers);
 
       try {
@@ -58,7 +54,7 @@ export async function proxy(request: NextRequest) {
       return NextResponse.next({ request: { headers: requestHeaders } });
     }
 
-    // Rule 1: Logged-in users should not access auth pages
+    // Rule 1: Logged-in users should not access auth pages,
     // except verify-email and reset-password (account-state mandated)
     if (
       isAuth &&
@@ -73,10 +69,11 @@ export async function proxy(request: NextRequest) {
 
     // Rule 2: Reset password page rules
     if (pathname === '/reset-password') {
-      const emailParam = request.nextUrl.searchParams.get('email');
+      const email = request.nextUrl.searchParams.get('email');
 
-      if (isValidAccessToken && emailParam) {
-        if (needPasswordChange) {
+      if (accessToken && email) {
+        const userInfo = await getUserInfo();
+        if (userInfo?.needPasswordChange) {
           return NextResponse.next();
         }
         return NextResponse.redirect(
@@ -85,7 +82,7 @@ export async function proxy(request: NextRequest) {
       }
 
       // From forgot-password flow
-      if (emailParam) {
+      if (email) {
         return NextResponse.next();
       }
 
@@ -106,30 +103,34 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // Rule 5: Enforce verify-email / reset-password based on JWT claims
-    if (isValidAccessToken && decodedAccessToken) {
-      if (emailVerified === false) {
-        if (pathname !== '/verify-email') {
-          const verifyEmailUrl = new URL('/verify-email', request.url);
-          if (email) verifyEmailUrl.searchParams.set('email', email);
-          return NextResponse.redirect(verifyEmailUrl);
-        }
-        return NextResponse.next();
-      }
+    // Rule 5: Enforce verify-email / reset-password if account state requires it
+    if (accessToken) {
+      const userInfo = await getUserInfo();
 
-      if (emailVerified && pathname === '/verify-email') {
-        return NextResponse.redirect(
-          new URL(getDefaultDashboardRoute(userRole as UserRole), request.url)
-        );
-      }
-
-      if (needPasswordChange) {
-        if (pathname !== '/reset-password') {
-          const resetPasswordUrl = new URL('/reset-password', request.url);
-          if (email) resetPasswordUrl.searchParams.set('email', email);
-          return NextResponse.redirect(resetPasswordUrl);
+      if (userInfo) {
+        if (userInfo.emailVerified === false) {
+          if (pathname !== '/verify-email') {
+            const verifyEmailUrl = new URL('/verify-email', request.url);
+            verifyEmailUrl.searchParams.set('email', userInfo.email);
+            return NextResponse.redirect(verifyEmailUrl);
+          }
+          return NextResponse.next();
         }
-        return NextResponse.next();
+
+        if (userInfo.emailVerified && pathname === '/verify-email') {
+          return NextResponse.redirect(
+            new URL(getDefaultDashboardRoute(userRole as UserRole), request.url)
+          );
+        }
+
+        if (userInfo.needPasswordChange) {
+          if (pathname !== '/reset-password') {
+            const resetPasswordUrl = new URL('/reset-password', request.url);
+            resetPasswordUrl.searchParams.set('email', userInfo.email);
+            return NextResponse.redirect(resetPasswordUrl);
+          }
+          return NextResponse.next();
+        }
       }
     }
 
@@ -139,7 +140,7 @@ export async function proxy(request: NextRequest) {
     }
 
     // Rule 7: Role-gated route, user lacks required role -> default dashboard
-    if (routeOwner === 'ADMIN' && userRole !== 'ADMIN') {
+    if (routeOwner === 'ADMIN' && routeOwner !== userRole) {
       return NextResponse.redirect(
         new URL(getDefaultDashboardRoute(userRole as UserRole), request.url)
       );
@@ -153,5 +154,15 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.well-known).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     * - .well-known
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.well-known).*)',
+  ],
 };
