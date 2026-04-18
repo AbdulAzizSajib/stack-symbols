@@ -27,7 +27,7 @@ export function SelectedIconsBar() {
     <div className="flex items-center gap-3 rounded-xl border border-border bg-background/95 backdrop-blur px-4 py-2 shadow-md">
       
       {/* Selected icons preview */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center  flex-wrap gap-2">
         {selected.map((svg) => (
           <div key={svg.slug} className="relative group">
             <Image

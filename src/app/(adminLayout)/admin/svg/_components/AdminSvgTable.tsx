@@ -53,7 +53,7 @@ export function AdminSvgTable({
                         <span>Preview</span>
                         <span>Title</span>
                         <span>Visibility</span>
-                        <span>Tags</span>
+                       
                         <span className="text-right">Actions</span>
                     </div>
                     <ul className="divide-y divide-border/70">

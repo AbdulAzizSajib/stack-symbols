@@ -23,7 +23,7 @@ export default function AdminSvgClient({ initialQuery }: { initialQuery: ISvgLis
 
     const query = useMemo<ISvgListQuery>(() => {
         const page = Number(searchParams.get("page") ?? initialQuery.page ?? 1);
-        const limit = Number(searchParams.get("limit") ?? initialQuery.limit ?? 200);
+        const limit = Number(searchParams.get("limit") ?? initialQuery.limit ?? 20);
         return {
             page,
             limit,
