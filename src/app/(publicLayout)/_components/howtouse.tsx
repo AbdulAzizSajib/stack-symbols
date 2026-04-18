@@ -10,7 +10,7 @@ const roles = [
   {
     title: 'Backend developer',
     color: 'bg-blue-100',
-    icons: 'go,python,docker,postgresql',
+    icons: 'go,python,nodejs,postgresql',
   },
   {
     title: 'DevOps engineer',
