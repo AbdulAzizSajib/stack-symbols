@@ -31,8 +31,6 @@ const navigation: NavItem[] = [
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/svg", label: "SVG", icon: Shapes },
-    { href: "/admin/logout", label: "Logout", icon: LogOut },
-
 ];
 
 function isActivePath(pathname: string, item: NavItem) {
@@ -83,6 +81,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
                                     </Link>
                                 );
                             })}
+
+                            <form action="/admin/logout" method="POST">
+                                <button
+                                    type="submit"
+                                    className="group flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-muted/50 hover:text-foreground"
+                                >
+                                    <span className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-background">
+                                        <LogOut className="size-4" />
+                                    </span>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
                         </nav>
 
                         <Card className="mt-auto border-primary/15 bg-primary/5 shadow-none">
